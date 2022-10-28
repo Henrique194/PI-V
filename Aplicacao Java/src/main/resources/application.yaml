@@ -1,0 +1,46 @@
+spring:
+   jpa:
+    hibernate:
+     naming:
+      # Necessário Para Evitar Que O Nome Das Tabelas No Entity Sejam Convertidos para snake_case
+      physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+     hibernate:
+      '[format_sql]': true
+      jdbc:
+       # Fuso Horário De Brasília
+       '[time_zone]': UTC-03
+      
+   datasource:
+    url: jdbc:sqlserver://pi-v-sql-server.database.windows.net:1433;database=pi-v-sql-database
+    username: admin-server
+    password: my-pass-2905
+      
+   cloud:
+     azure:
+       eventhubs:
+         connection-string: Endpoint=sb://ihsuprodsnres010dednamespace.servicebus.windows.net/;SharedAccessKeyName=iothubowner;SharedAccessKey=QskwnQuxa/7F5E7kKZwyiY6su0gOr4l5aAHs7HBGnBs=;EntityPath=iothub-ehub-pi-v-iot-h-19169230-18f4743e0a
+         processor:
+           checkpoint-store:
+             account-name: pivstorageaccount
+             account-key: oRwu0a6JQiDaIckayvhltA75BHwjo5D8DkBCAWFbFyARzNePyYX0TaV/ZL7yPZkN7LpGnjJZblZP+AStLvFv/g==
+             container-name: pi-v-container
+     stream:
+       bindings:
+         consume-in-0:
+           destination: iothub-ehub-pi-v-iot-h-19169230-18f4743e0a
+           group: $Default
+         supply-out-0:
+           destination: iothub-ehub-pi-v-iot-h-19169230-18f4743e0a
+
+       eventhubs:
+         bindings:
+           consume-in-0:
+             consumer:
+               checkpoint:
+                 mode: MANUAL
+       function:
+         definition: consume;
+         
+      
